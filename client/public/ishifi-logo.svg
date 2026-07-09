@@ -1,0 +1,86 @@
+<svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background circle -->
+  <defs>
+    <linearGradient id="piggyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFB3D9;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FF6B9D;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="coinGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFE9B8;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#D99B23;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Main piggy bank body -->
+  <ellipse cx="200" cy="220" rx="95" ry="110" fill="url(#piggyGrad)" />
+
+  <!-- Piggy head -->
+  <ellipse cx="200" cy="100" rx="60" ry="70" fill="url(#piggyGrad)" />
+
+  <!-- Ears -->
+  <ellipse cx="150" cy="60" rx="18" ry="32" fill="url(#piggyGrad)" />
+  <ellipse cx="250" cy="60" rx="18" ry="32" fill="url(#piggyGrad)" />
+
+  <!-- Inner ears -->
+  <ellipse cx="150" cy="70" rx="10" ry="18" fill="#FFD9E8" />
+  <ellipse cx="250" cy="70" rx="10" ry="18" fill="#FFD9E8" />
+
+  <!-- Snout -->
+  <ellipse cx="200" cy="135" rx="28" ry="20" fill="#FFB3D9" />
+
+  <!-- Nostrils -->
+  <circle cx="190" cy="137" r="4" fill="#FF69B4" />
+  <circle cx="210" cy="137" r="4" fill="#FF69B4" />
+
+  <!-- Eyes -->
+  <circle cx="180" cy="95" r="8" fill="white" />
+  <circle cx="220" cy="95" r="8" fill="white" />
+
+  <!-- Pupils -->
+  <circle cx="182" cy="93" r="5" fill="#333" />
+  <circle cx="222" cy="93" r="5" fill="#333" />
+
+  <!-- Happy mouth -->
+  <path d="M 185 125 Q 200 135 215 125" stroke="#FF69B4" stroke-width="2" fill="none" stroke-linecap="round" />
+
+  <!-- Rosy cheeks -->
+  <ellipse cx="145" cy="110" rx="15" ry="12" fill="#FFB3D9" opacity="0.6" />
+  <ellipse cx="255" cy="110" rx="15" ry="12" fill="#FFB3D9" opacity="0.6" />
+
+  <!-- Coin slot on back -->
+  <ellipse cx="200" cy="150" rx="35" ry="8" fill="#FF69B4" />
+
+  <!-- Wallet/card in piggy -->
+  <rect x="160" y="200" width="35" height="50" rx="3" fill="#FF6B9D" stroke="#FF1493" stroke-width="2" />
+  <line x1="165" y1="215" x2="190" y2="215" stroke="white" stroke-width="1.5" />
+
+  <!-- Coins around piggy -->
+  <!-- Coin 1 -->
+  <circle cx="280" cy="280" r="25" fill="url(#coinGrad)" stroke="#D99B23" stroke-width="2" />
+  <text x="280" y="290" font-size="20" font-weight="bold" fill="#8B6914" text-anchor="middle">₹</text>
+
+  <!-- Coin 2 -->
+  <circle cx="320" cy="320" r="20" fill="url(#coinGrad)" stroke="#D99B23" stroke-width="1.5" />
+  <text x="320" y="328" font-size="16" font-weight="bold" fill="#8B6914" text-anchor="middle">₹</text>
+
+  <!-- Coin 3 -->
+  <circle cx="90" cy="300" r="22" fill="url(#coinGrad)" stroke="#D99B23" stroke-width="2" />
+  <text x="90" y="309" font-size="18" font-weight="bold" fill="#8B6914" text-anchor="middle">₹</text>
+
+  <!-- Credit card -->
+  <rect x="250" y="120" width="45" height="30" rx="2" fill="#FF69B4" stroke="#C7437C" stroke-width="1.5" />
+  <rect x="255" y="130" width="12" height="8" fill="#FFD700" />
+
+  <!-- Heart -->
+  <path d="M 120 180 Q 110 170 100 170 Q 85 170 85 180 Q 85 195 120 220 Q 155 195 155 180 Q 155 170 140 170 Q 130 170 120 180 Z" fill="#FF1493" />
+
+  <!-- Decorative leaf -->
+  <ellipse cx="85" cy="250" rx="12" ry="18" fill="#8FBC8F" transform="rotate(-35 85 250)" />
+
+  <!-- Sparkles -->
+  <circle cx="310" cy="150" r="2" fill="#FFD700" />
+  <circle cx="330" cy="180" r="2" fill="#FFD700" />
+  <circle cx="320" cy="210" r="2" fill="#FFD700" />
+  <circle cx="290" cy="230" r="2" fill="#FFD700" />
+  <circle cx="260" cy="280" r="2" fill="#FFD700" />
+</svg>

@@ -1,0 +1,36 @@
+# dependencies
+node_modules/
+client/node_modules/
+
+# python
+__pycache__/
+*.pyc
+api/.venv/
+api/venv/
+*.egg-info/
+
+# env / secrets
+.env
+.env.local
+*.env
+!*.env.example
+config.json
+
+# database
+*.db
+*.sqlite
+*.sqlite3
+
+# build output
+client/dist/
+client/build/
+
+# logs
+*.log
+npm-debug.log*
+
+# editor / OS
+.vscode/
+.claude/
+.DS_Store
+Thumbs.db

@@ -1,0 +1,1225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aurum — Money, mastered beautifully</title>
+<style>
+/* ════════════════════════════════════════════════════════════════════
+   AURUM DESIGN SYSTEM — dark-first, premium fintech
+   ════════════════════════════════════════════════════════════════════ */
+:root {
+  /* surfaces */
+  --bg-0: #07090c;
+  --bg-1: #0b0f14;
+  --glass: rgba(255, 255, 255, 0.032);
+  --glass-2: rgba(255, 255, 255, 0.055);
+  --stroke: rgba(255, 255, 255, 0.08);
+  --stroke-2: rgba(255, 255, 255, 0.14);
+  /* ink */
+  --ink: #eef3f1;
+  --ink-2: #a8b4bc;
+  --muted: #64707a;
+  /* accents */
+  --emerald: #2fbf8f;
+  --emerald-deep: #0e7c5a;
+  --cyan: #58c8e6;
+  --gold: #d9b36a;
+  --gold-deep: #a8823f;
+  --violet: #9d8cff;
+  --red: #e07474;
+  /* motion */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --spring: cubic-bezier(0.34, 1.45, 0.44, 1);
+  --dur: 0.7s;
+  /* type */
+  --font: "Segoe UI Variable Display", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --radius: 18px;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg-0);
+  color: var(--ink);
+  font-family: var(--font);
+  font-size: 16px;
+  line-height: 1.6;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+::selection { background: rgba(47, 191, 143, 0.35); }
+:focus-visible { outline: 2px solid var(--emerald); outline-offset: 3px; border-radius: 6px; }
+
+h1, h2, h3 { font-weight: 700; letter-spacing: -0.03em; line-height: 1.12; }
+.num { font-variant-numeric: tabular-nums; }
+
+/* ── ambient background layers ─────────────────────────────────────── */
+.bg-layers { position: fixed; inset: 0; z-index: -2; overflow: hidden; pointer-events: none; }
+.bg-grid {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.022) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.022) 1px, transparent 1px);
+  background-size: 72px 72px;
+  mask-image: radial-gradient(ellipse 90% 60% at 50% 0%, #000 30%, transparent 75%);
+  -webkit-mask-image: radial-gradient(ellipse 90% 60% at 50% 0%, #000 30%, transparent 75%);
+}
+.blob { position: absolute; border-radius: 50%; filter: blur(110px); opacity: 0.5; will-change: transform; }
+.blob-1 { width: 620px; height: 620px; left: -160px; top: -180px;
+  background: radial-gradient(circle, rgba(14,124,90,0.32), transparent 65%); }
+.blob-2 { width: 540px; height: 540px; right: -140px; top: 120px;
+  background: radial-gradient(circle, rgba(88,160,230,0.14), transparent 65%); }
+.blob-3 { width: 700px; height: 700px; left: 30%; top: 1200px;
+  background: radial-gradient(circle, rgba(157,140,255,0.09), transparent 65%); }
+.bg-noise {
+  position: absolute; inset: 0; opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E");
+}
+/* faint chart line drifting across the very top */
+.bg-chartline { position: absolute; top: 0; left: 0; width: 200%; opacity: 0.5;
+  animation: chartDrift 60s linear infinite; }
+@keyframes chartDrift { to { transform: translateX(-50%); } }
+
+.wrap { max-width: 1200px; margin: 0 auto; padding: 0 28px; }
+section { position: relative; padding: 110px 0; }
+
+/* ── reveal-on-scroll ──────────────────────────────────────────────── */
+.reveal { opacity: 0; transform: translateY(30px); }
+.reveal.in { opacity: 1; transform: none; transition: opacity 0.9s var(--ease-out), transform 0.9s var(--ease-out); }
+.reveal.d1.in { transition-delay: 0.08s; } .reveal.d2.in { transition-delay: 0.16s; }
+.reveal.d3.in { transition-delay: 0.24s; } .reveal.d4.in { transition-delay: 0.32s; }
+
+/* ── section headers ───────────────────────────────────────────────── */
+.kicker {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 12px; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--emerald); margin-bottom: 14px;
+}
+.kicker::before { content: ""; width: 22px; height: 1px; background: var(--emerald); opacity: 0.7; }
+.sec-title { font-size: clamp(28px, 4vw, 42px); margin-bottom: 12px; }
+.sec-sub { color: var(--ink-2); max-width: 560px; font-size: 17px; }
+
+/* ── nav ───────────────────────────────────────────────────────────── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+  transition: transform 0.45s var(--ease-out), background 0.4s, border-color 0.4s;
+  border-bottom: 1px solid transparent;
+}
+nav.scrolled { background: rgba(9, 12, 16, 0.72); backdrop-filter: blur(18px); border-color: var(--stroke); }
+nav.hidden { transform: translateY(-100%); }
+.nav-inner { max-width: 1200px; margin: 0 auto; padding: 16px 28px;
+  display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+.logo { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 19px;
+  letter-spacing: -0.02em; text-decoration: none; color: var(--ink); }
+.logo-coin { width: 26px; height: 26px; border-radius: 50%; position: relative;
+  background: radial-gradient(circle at 34% 30%, #f0d9a4, var(--gold) 45%, var(--gold-deep) 90%);
+  box-shadow: 0 0 14px rgba(217,179,106,0.35), inset 0 -2px 4px rgba(0,0,0,0.35);
+  animation: logoSpin 7s var(--ease-out) infinite; }
+@keyframes logoSpin { 0%, 72% { transform: rotateY(0); } 86% { transform: rotateY(180deg); } 100% { transform: rotateY(360deg); } }
+.nav-links { display: flex; gap: 6px; }
+.nav-links a {
+  position: relative; color: var(--ink-2); text-decoration: none; font-size: 14px; font-weight: 500;
+  padding: 8px 14px; border-radius: 999px; transition: color 0.3s, background 0.3s;
+}
+.nav-links a:hover { color: var(--ink); background: var(--glass-2); }
+.nav-links a.active { color: var(--ink); }
+.nav-links a.active::after {
+  content: ""; position: absolute; left: 50%; bottom: 2px; width: 16px; height: 2px;
+  background: var(--emerald); border-radius: 2px; transform: translateX(-50%);
+  animation: navDot 0.4s var(--spring);
+}
+@keyframes navDot { from { width: 0; opacity: 0; } }
+
+/* ── buttons ───────────────────────────────────────────────────────── */
+.btn {
+  display: inline-flex; align-items: center; gap: 9px;
+  font-family: var(--font); font-size: 15px; font-weight: 600;
+  padding: 13px 26px; border-radius: 999px; border: 1px solid transparent;
+  cursor: pointer; text-decoration: none; color: var(--ink);
+  transition: transform 0.35s var(--spring), box-shadow 0.35s, background 0.3s, border-color 0.3s;
+  will-change: transform;
+}
+.btn-primary {
+  background: linear-gradient(135deg, var(--emerald-deep), var(--emerald) 60%, #43cf9f);
+  color: #04140e;
+  box-shadow: 0 8px 28px rgba(20, 160, 110, 0.28), inset 0 1px 0 rgba(255,255,255,0.28);
+}
+.btn-primary:hover { box-shadow: 0 12px 40px rgba(20, 160, 110, 0.42), inset 0 1px 0 rgba(255,255,255,0.28); transform: translateY(-2px); }
+.btn-ghost { background: var(--glass); border-color: var(--stroke-2); backdrop-filter: blur(8px); }
+.btn-ghost:hover { background: var(--glass-2); border-color: rgba(255,255,255,0.22); transform: translateY(-2px); }
+.btn-sm { padding: 9px 18px; font-size: 13.5px; }
+.btn .arr { transition: transform 0.35s var(--spring); display: inline-block; }
+.btn:hover .arr { transform: translateX(4px); }
+
+/* ── cards ─────────────────────────────────────────────────────────── */
+.card {
+  background: linear-gradient(160deg, var(--glass-2), var(--glass) 55%);
+  border: 1px solid var(--stroke);
+  border-radius: var(--radius);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 18px 46px rgba(0, 0, 0, 0.38), inset 0 1px 0 rgba(255,255,255,0.055);
+  position: relative;
+  transition: transform 0.5s var(--ease-out), border-color 0.4s, box-shadow 0.5s;
+}
+.tilt { transform-style: preserve-3d; will-change: transform; }
+.card:hover { border-color: var(--stroke-2); box-shadow: 0 26px 60px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.08); }
+/* cursor-tracked sheen */
+.card::before {
+  content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 50%), rgba(255,255,255,0.052), transparent 45%);
+  opacity: 0; transition: opacity 0.4s;
+}
+.card:hover::before { opacity: 1; }
+
+/* ════════════════════════════ HERO ═════════════════════════════════ */
+.hero { padding: 168px 0 96px; overflow: visible; }
+.hero-grid { display: grid; grid-template-columns: 1.02fr 0.98fr; gap: 40px; align-items: center; }
+.hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 9px;
+  background: var(--glass); border: 1px solid var(--stroke); border-radius: 999px;
+  padding: 7px 15px; font-size: 13px; color: var(--ink-2); margin-bottom: 26px;
+  backdrop-filter: blur(8px);
+}
+.live-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--emerald);
+  box-shadow: 0 0 0 0 rgba(47,191,143,0.5); animation: pulse 2.4s ease-out infinite; }
+@keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(47,191,143,0.5); } 70% { box-shadow: 0 0 0 9px rgba(47,191,143,0); } 100% { box-shadow: 0 0 0 0 rgba(47,191,143,0); } }
+.hero h1 { font-size: clamp(42px, 5.6vw, 66px); margin-bottom: 22px; }
+.grad-text {
+  background: linear-gradient(100deg, var(--emerald) 10%, var(--cyan) 55%, var(--gold) 95%);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.hero-sub { font-size: 18px; color: var(--ink-2); max-width: 480px; margin-bottom: 34px; }
+.hero-ctas { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 40px; }
+.hero-proof { display: flex; gap: 28px; flex-wrap: wrap; color: var(--muted); font-size: 13.5px; }
+.hero-proof b { color: var(--ink-2); font-weight: 600; }
+.hero-proof span { display: flex; align-items: center; gap: 7px; }
+
+/* hero stage — piggy, coins, floating cards */
+.stage { position: relative; height: 560px; perspective: 1100px; }
+.stage-layer { position: absolute; inset: 0; will-change: transform; }
+.piggy-wrap {
+  position: absolute; left: 50%; top: 44%; transform: translate(-50%, -50%);
+  width: 340px; filter: drop-shadow(0 34px 44px rgba(0,0,0,0.5));
+  animation: breathe 5.5s ease-in-out infinite;
+}
+.drop-coin { opacity: 0; }
+@keyframes breathe {
+  0%, 100% { transform: translate(-50%, -50%) scale(1) rotate(-1deg); }
+  50% { transform: translate(-50%, -49%) scale(1.018) rotate(0.6deg); }
+}
+.piggy-shadow {
+  position: absolute; left: 50%; top: 76%; transform: translateX(-50%);
+  width: 250px; height: 42px; border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(0,0,0,0.5), transparent 70%);
+  animation: shadowPulse 5.5s ease-in-out infinite;
+}
+@keyframes shadowPulse { 0%, 100% { transform: translateX(-50%) scale(1); opacity: 1; } 50% { transform: translateX(-50%) scale(1.05); opacity: 0.8; } }
+
+/* coins — CSS 3D discs */
+.coin {
+  position: absolute; border-radius: 50%;
+  background: radial-gradient(circle at 32% 28%, #f4e0ac, var(--gold) 46%, var(--gold-deep) 82%, #6e5426);
+  box-shadow: inset 0 -3px 6px rgba(0,0,0,0.4), inset 0 2px 4px rgba(255,255,255,0.45),
+              0 10px 24px rgba(0,0,0,0.45), 0 0 22px rgba(217,179,106,0.14);
+  display: flex; align-items: center; justify-content: center;
+  color: rgba(88, 62, 18, 0.85); font-weight: 700;
+  will-change: transform;
+}
+.coin::after { content: ""; position: absolute; inset: 12%; border-radius: 50%;
+  border: 1.5px solid rgba(120, 90, 30, 0.5); }
+.coin-a { width: 64px; height: 64px; left: 6%; top: 12%; font-size: 24px; animation: drift1 9s ease-in-out infinite; }
+.coin-b { width: 44px; height: 44px; right: 10%; top: 7%; font-size: 17px; animation: drift2 11s ease-in-out infinite 0.8s; }
+.coin-c { width: 34px; height: 34px; right: 3%; top: 46%; font-size: 13px; animation: drift3 8s ease-in-out infinite 1.6s; }
+.coin-d { width: 26px; height: 26px; left: 13%; top: 56%; font-size: 11px; animation: drift2 10s ease-in-out infinite 2.2s; }
+@keyframes drift1 {
+  0%, 100% { transform: translateY(0) rotateY(0deg) rotate(-8deg); }
+  25% { transform: translateY(-16px) rotateY(150deg) rotate(-4deg); }
+  50% { transform: translateY(-4px) rotateY(200deg) rotate(2deg); }
+  75% { transform: translateY(-20px) rotateY(340deg) rotate(-2deg); }
+}
+@keyframes drift2 {
+  0%, 100% { transform: translateY(0) rotateY(20deg); }
+  40% { transform: translateY(-22px) rotateY(190deg); }
+  70% { transform: translateY(-8px) rotateY(280deg); }
+}
+@keyframes drift3 {
+  0%, 100% { transform: translateY(0) rotate(10deg); }
+  50% { transform: translateY(-14px) rotate(-6deg); }
+}
+
+/* floating summary chips */
+.chip-float {
+  position: absolute; display: flex; align-items: center; gap: 10px;
+  background: rgba(16, 21, 27, 0.72); border: 1px solid var(--stroke-2);
+  border-radius: 14px; padding: 10px 15px; backdrop-filter: blur(12px);
+  box-shadow: 0 16px 34px rgba(0,0,0,0.45); font-size: 13px; font-weight: 600;
+  animation: chipFloat 7s ease-in-out infinite; will-change: transform;
+}
+@keyframes chipFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+.chip-ico { width: 30px; height: 30px; border-radius: 9px; display: flex; align-items: center;
+  justify-content: center; font-size: 14px; }
+.chip-float small { display: block; color: var(--muted); font-weight: 500; font-size: 11px; }
+.chip-income { right: -4%; top: 24%; animation-delay: 0.6s; }
+.chip-income .chip-ico { background: rgba(47,191,143,0.14); }
+.chip-income b { color: var(--emerald); }
+.chip-spend { left: -5%; top: 34%; animation-delay: 1.8s; }
+.chip-spend .chip-ico { background: rgba(224,116,116,0.13); }
+.chip-save { right: 2%; bottom: 24%; animation-delay: 2.6s; }
+.chip-save .chip-ico { background: rgba(88,200,230,0.13); }
+.chip-save b { color: var(--cyan); }
+
+/* mini dashboard preview */
+.mini-dash {
+  position: absolute; left: -3%; bottom: -3%; width: 300px;
+  border-radius: 20px; padding: 20px;
+  background: linear-gradient(165deg, rgba(22, 29, 36, 0.9), rgba(13, 17, 22, 0.92));
+  border: 1px solid var(--stroke-2); backdrop-filter: blur(16px);
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255,255,255,0.07);
+  animation: chipFloat 8s ease-in-out infinite 1.2s;
+}
+.mini-dash .md-head { display: flex; justify-content: space-between; align-items: center;
+  font-size: 12px; color: var(--muted); margin-bottom: 8px; letter-spacing: 0.06em; }
+.md-live { display: flex; align-items: center; gap: 6px; color: var(--emerald); font-weight: 600; font-size: 11px; }
+.mini-dash .md-bal { font-size: 30px; font-weight: 700; letter-spacing: -0.02em; }
+.mini-dash .md-delta { font-size: 12.5px; color: var(--emerald); font-weight: 600; margin-bottom: 12px; }
+.md-spark { margin: 2px 0 12px; }
+.md-row { display: flex; gap: 8px; }
+.md-cell { flex: 1; background: rgba(255,255,255,0.045); border: 1px solid var(--stroke);
+  border-radius: 11px; padding: 8px 10px; }
+.md-cell small { display: block; font-size: 10px; color: var(--muted); letter-spacing: 0.04em; text-transform: uppercase; }
+.md-cell b { font-size: 14px; }
+
+/* ══════════════════════ METRICS ════════════════════════════════════ */
+.metrics-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; margin-top: 48px; }
+.metric { padding: 24px 22px; overflow: hidden; }
+.metric .m-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }
+.m-ico { width: 42px; height: 42px; border-radius: 13px; display: flex; align-items: center;
+  justify-content: center; border: 1px solid var(--stroke); }
+.m-trend { font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 999px; }
+.m-trend.up { color: var(--emerald); background: rgba(47,191,143,0.12); }
+.m-trend.down { color: var(--red); background: rgba(224,116,116,0.12); }
+.metric .m-label { color: var(--muted); font-size: 12.5px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 600; }
+.metric .m-value { font-size: 32px; font-weight: 700; letter-spacing: -0.02em; margin: 4px 0 2px; }
+.metric .m-foot { font-size: 12.5px; color: var(--ink-2); }
+.metric svg.mspark { position: absolute; right: 0; bottom: 0; opacity: 0.5; }
+
+/* ═════════════════════ ANALYTICS ═══════════════════════════════════ */
+.ana-grid { display: grid; grid-template-columns: 1.65fr 1fr; gap: 18px; margin-top: 48px; }
+.ana-main { padding: 26px; }
+.ana-head { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px; margin-bottom: 18px; }
+.ana-head h3 { font-size: 18px; }
+.ana-head .sub { font-size: 13px; color: var(--muted); }
+.tabs { display: flex; background: rgba(255,255,255,0.045); border: 1px solid var(--stroke);
+  border-radius: 999px; padding: 4px; position: relative; }
+.tabs button {
+  position: relative; z-index: 1; background: none; border: none; color: var(--muted);
+  font-family: var(--font); font-size: 13px; font-weight: 600; padding: 7px 18px;
+  border-radius: 999px; cursor: pointer; transition: color 0.3s;
+}
+.tabs button.on { color: #06130d; }
+.tab-pill { position: absolute; top: 4px; bottom: 4px; border-radius: 999px;
+  background: linear-gradient(135deg, var(--emerald), #43cf9f);
+  transition: left 0.4s var(--spring), width 0.4s var(--spring);
+  box-shadow: 0 4px 14px rgba(20,160,110,0.35); }
+#areaChart { width: 100%; display: block; }
+.rings { padding: 26px; display: flex; flex-direction: column; }
+.rings h3 { font-size: 18px; margin-bottom: 4px; }
+.rings .sub { font-size: 13px; color: var(--muted); margin-bottom: 18px; }
+.ring-row { display: flex; align-items: center; gap: 14px; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+.ring-row:last-child { border-bottom: none; }
+.ring-svg { flex: 0 0 auto; }
+.ring-svg circle.track { stroke: rgba(255,255,255,0.07); }
+.ring-svg circle.val { transition: stroke-dashoffset 1.4s var(--ease-out); }
+.ring-info { flex: 1; }
+.ring-info b { font-size: 14.5px; display: block; }
+.ring-info small { color: var(--muted); font-size: 12px; }
+.ring-amt { text-align: right; font-weight: 700; font-size: 14.5px; }
+.ring-amt small { display: block; color: var(--muted); font-weight: 500; font-size: 11.5px; }
+
+/* ═════════════════════ PLANNER ═════════════════════════════════════ */
+.plan-grid { display: grid; grid-template-columns: 1.5fr 1fr; gap: 18px; margin-top: 48px; }
+.plan-card { padding: 26px; }
+.plan-card h3 { font-size: 18px; margin-bottom: 2px; }
+.plan-card .sub { font-size: 13px; color: var(--muted); margin-bottom: 20px; }
+.limit-row { padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+.limit-row:last-child { border-bottom: none; }
+.limit-top { display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 8px; }
+.limit-top b { font-weight: 600; }
+.limit-top .lt-r { color: var(--ink-2); font-size: 13px; }
+.limit-bar { height: 8px; border-radius: 6px; background: rgba(255,255,255,0.055); overflow: hidden; position: relative; }
+.limit-fill { height: 100%; border-radius: 6px; width: 0; position: relative;
+  transition: width 1.5s var(--ease-out); }
+.limit-fill::after { /* shimmer pass */
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(105deg, transparent 30%, rgba(255,255,255,0.35) 50%, transparent 70%);
+  transform: translateX(-120%); animation: shimmer 3.8s var(--ease-out) infinite;
+}
+@keyframes shimmer { 0%, 55% { transform: translateX(-120%); } 85%, 100% { transform: translateX(130%); } }
+.plan-side { display: flex; flex-direction: column; gap: 18px; }
+
+/* vault (jar fill) */
+.vault-visual { display: flex; align-items: center; gap: 20px; }
+.jar-wrap { position: relative; flex: 0 0 auto; }
+.goal-info b.big { font-size: 26px; display: block; letter-spacing: -0.02em; }
+.goal-info small { color: var(--muted); font-size: 12.5px; }
+.goal-eta { margin-top: 10px; display: inline-block; font-size: 12px; font-weight: 600;
+  color: var(--gold); background: rgba(217,179,106,0.1); border: 1px solid rgba(217,179,106,0.25);
+  padding: 4px 11px; border-radius: 999px; }
+
+/* ═════════════════════ TIMELINE ════════════════════════════════════ */
+.tx-list { margin-top: 48px; display: flex; flex-direction: column; gap: 10px; }
+.tx {
+  display: grid; grid-template-columns: 46px 1fr auto; gap: 16px; align-items: center;
+  padding: 15px 20px; cursor: default;
+}
+.tx-ico { width: 46px; height: 46px; border-radius: 14px; display: flex; align-items: center;
+  justify-content: center; font-size: 19px; border: 1px solid var(--stroke);
+  transition: transform 0.4s var(--spring); }
+.tx:hover .tx-ico { transform: scale(1.1) rotate(-6deg); }
+.tx-name { font-weight: 600; font-size: 15px; }
+.tx-meta { color: var(--muted); font-size: 12.5px; }
+.tx-amt { font-weight: 700; font-size: 15.5px; text-align: right; }
+.tx-amt.in { color: var(--emerald); }
+.tx-amt small { display: block; font-weight: 500; color: var(--muted); font-size: 11.5px; }
+.tx-extra { grid-column: 2 / 4; max-height: 0; overflow: hidden; opacity: 0;
+  transition: max-height 0.5s var(--ease-out), opacity 0.4s, margin 0.4s; }
+.tx:hover .tx-extra { max-height: 44px; opacity: 1; margin-top: 4px; }
+.tx-tag { display: inline-block; font-size: 11.5px; font-weight: 600; padding: 4px 11px;
+  border-radius: 999px; border: 1px solid var(--stroke-2); color: var(--ink-2); margin-right: 8px; }
+
+/* ═════════════════════ INSIGHTS ════════════════════════════════════ */
+.ins-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; margin-top: 48px; }
+.ins { padding: 24px; overflow: hidden; }
+.ins::after { content: ""; position: absolute; left: 0; top: 18%; bottom: 18%; width: 3px;
+  border-radius: 3px; background: var(--ins-c, var(--emerald)); box-shadow: 0 0 18px var(--ins-c, var(--emerald)); }
+.ins .i-head { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+.ins .i-ico { width: 38px; height: 38px; border-radius: 12px; display: flex; align-items: center;
+  justify-content: center; font-size: 17px; border: 1px solid var(--stroke); }
+.ins .i-tag { font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ins-c, var(--emerald)); }
+.ins h4 { font-size: 16.5px; margin-bottom: 6px; font-weight: 650; }
+.ins p { font-size: 13.5px; color: var(--ink-2); }
+.ins p b { color: var(--ink); }
+
+/* ═════════════════════ FINAL CTA ═══════════════════════════════════ */
+.final { text-align: center; padding: 130px 0 60px; }
+.final-card {
+  position: relative; max-width: 780px; margin: 0 auto; padding: 72px 40px;
+  border-radius: 30px; overflow: hidden;
+  background: linear-gradient(170deg, rgba(20, 27, 33, 0.9), rgba(10, 14, 18, 0.95));
+  border: 1px solid var(--stroke-2);
+  box-shadow: 0 40px 100px rgba(0,0,0,0.55);
+}
+.final-card::before {
+  content: ""; position: absolute; inset: -2px; border-radius: 32px; padding: 1.5px; z-index: 0;
+  background: conic-gradient(from var(--sweep, 0deg), transparent 0 70%, rgba(47,191,143,0.75) 82%, rgba(88,200,230,0.6) 90%, transparent 98%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude;
+  animation: sweep 6s linear infinite;
+}
+@property --sweep { syntax: "<angle>"; initial-value: 0deg; inherits: false; }
+@keyframes sweep { to { --sweep: 360deg; } }
+.final-card > * { position: relative; z-index: 1; }
+.final h2 { font-size: clamp(30px, 4.4vw, 48px); margin-bottom: 16px; }
+.final p { color: var(--ink-2); font-size: 17px; max-width: 480px; margin: 0 auto 34px; }
+.final-stats { display: flex; justify-content: center; gap: 44px; margin-top: 44px; flex-wrap: wrap; }
+.final-stats .fs b { display: block; font-size: 26px; letter-spacing: -0.02em; }
+.final-stats .fs small { color: var(--muted); font-size: 12.5px; letter-spacing: 0.08em; text-transform: uppercase; }
+footer { border-top: 1px solid var(--stroke); margin-top: 90px; padding: 34px 0; }
+.foot-inner { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;
+  color: var(--muted); font-size: 13px; }
+.foot-inner .logo { font-size: 16px; }
+.foot-inner .logo .logo-coin { width: 20px; height: 20px; animation: none; }
+
+/* ── chart tooltip ─────────────────────────────────────────────────── */
+#ctip { position: fixed; pointer-events: none; z-index: 60; display: none;
+  background: rgba(14, 19, 24, 0.95); border: 1px solid var(--stroke-2); border-radius: 10px;
+  padding: 8px 13px; font-size: 12.5px; backdrop-filter: blur(10px);
+  box-shadow: 0 12px 34px rgba(0,0,0,0.55); }
+#ctip .th { color: var(--muted); font-size: 11px; margin-bottom: 1px; }
+
+/* ── responsive ────────────────────────────────────────────────────── */
+@media (max-width: 1020px) {
+  .hero-grid { grid-template-columns: 1fr; gap: 10px; }
+  .stage { height: 520px; margin-top: 20px; }
+  .metrics-grid { grid-template-columns: repeat(2, 1fr); }
+  .ana-grid, .plan-grid { grid-template-columns: 1fr; }
+  .nav-links { display: none; }
+}
+@media (max-width: 600px) {
+  section { padding: 72px 0; }
+  .hero { padding-top: 130px; }
+  .metrics-grid, .ins-grid { grid-template-columns: 1fr; }
+  .stage { height: 440px; }
+  .piggy-wrap { width: 260px; }
+  .mini-dash { width: 260px; left: 0; }
+  .chip-spend { left: 0; } .chip-income { right: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  .reveal { opacity: 1; transform: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- ambient background -->
+<div class="bg-layers">
+  <div class="bg-grid"></div>
+  <div class="blob blob-1" data-para="0.12"></div>
+  <div class="blob blob-2" data-para="0.2"></div>
+  <div class="blob blob-3" data-para="0.06"></div>
+  <svg class="bg-chartline" viewBox="0 0 1600 220" fill="none" preserveAspectRatio="none" height="220">
+    <path d="M0 170 Q 80 150 140 160 T 300 120 T 460 140 T 620 80 T 800 110 T 960 60 T 1120 90 T 1280 40 T 1440 70 T 1600 30"
+      stroke="rgba(47,191,143,0.07)" stroke-width="1.5"/>
+    <path d="M0 190 Q 100 180 180 185 T 380 160 T 560 175 T 760 130 T 980 150 T 1200 100 T 1420 125 T 1600 85"
+      stroke="rgba(88,200,230,0.05)" stroke-width="1.5"/>
+  </svg>
+  <div class="bg-noise"></div>
+</div>
+
+<!-- ══ NAV ══ -->
+<nav id="nav">
+  <div class="nav-inner">
+    <a class="logo" href="#top"><span class="logo-coin"></span>aurum</a>
+    <div class="nav-links" id="navLinks">
+      <a href="#metrics">Overview</a>
+      <a href="#analytics">Analytics</a>
+      <a href="#planner">Planner</a>
+      <a href="#activity">Activity</a>
+      <a href="#insights">Insights</a>
+    </div>
+    <a class="btn btn-primary btn-sm magnetic" href="#cta">Get started</a>
+  </div>
+</nav>
+
+<!-- ══ HERO ══ -->
+<header class="hero" id="top">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="hero-eyebrow reveal"><span class="live-dot"></span> Tracking ₹4.2Cr for 12,000+ people</div>
+      <h1 class="reveal d1">Every rupee,<br>accounted. <span class="grad-text">Beautifully.</span></h1>
+      <p class="hero-sub reveal d2">Aurum turns everyday spending into a calm, crystal-clear picture of
+        your financial life — budgets, habits and insights in one place that respects your money
+        <em>and</em> your taste.</p>
+      <div class="hero-ctas reveal d3">
+        <a class="btn btn-primary magnetic" href="#cta">Start tracking free <span class="arr">→</span></a>
+        <a class="btn btn-ghost magnetic" href="#analytics">▶&nbsp; See it in motion</a>
+      </div>
+      <div class="hero-proof reveal d4">
+        <span><b>4.9★</b> loved by savers</span>
+        <span><b>0</b> ads, ever</span>
+        <span><b>100%</b> your data, your device</span>
+      </div>
+    </div>
+
+    <div class="stage" id="stage">
+      <!-- parallax layer: far -->
+      <div class="stage-layer" data-depth="12">
+        <div class="coin coin-c">₹</div>
+        <div class="coin coin-d">₹</div>
+      </div>
+      <!-- parallax layer: piggy -->
+      <div class="stage-layer" data-depth="22">
+        <div class="piggy-shadow"></div>
+        <div class="piggy-wrap">
+          <svg viewBox="0 0 400 320" fill="none">
+            <defs>
+              <linearGradient id="pgBody" x1="80" y1="40" x2="320" y2="300" gradientUnits="userSpaceOnUse">
+                <stop offset="0" stop-color="#1e9a74"/>
+                <stop offset="0.55" stop-color="#0e7c5a"/>
+                <stop offset="1" stop-color="#085642"/>
+              </linearGradient>
+              <linearGradient id="pgSnout" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#26a980"/>
+                <stop offset="1" stop-color="#0a6b4e"/>
+              </linearGradient>
+              <radialGradient id="pgSheen" cx="0.35" cy="0.25" r="0.7">
+                <stop offset="0" stop-color="#ffffff" stop-opacity="0.35"/>
+                <stop offset="0.5" stop-color="#ffffff" stop-opacity="0.05"/>
+                <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+              </radialGradient>
+              <linearGradient id="pgCoin" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#f4e0ac"/>
+                <stop offset="1" stop-color="#c99a4a"/>
+              </linearGradient>
+            </defs>
+            <!-- dropping coin -->
+            <g class="drop-coin">
+              <ellipse cx="200" cy="34" rx="26" ry="24" fill="url(#pgCoin)" stroke="#8a6a2c" stroke-width="2"/>
+              <text x="200" y="42" text-anchor="middle" font-size="22" font-weight="700" fill="#7a5c22" font-family="system-ui">₹</text>
+            </g>
+            <!-- tail -->
+            <path d="M52 178 C 30 168, 26 194, 46 196 C 60 197, 58 182, 50 184"
+              stroke="#0e7c5a" stroke-width="9" stroke-linecap="round" fill="none"/>
+            <!-- legs -->
+            <rect x="118" y="256" width="34" height="46" rx="15" fill="#085642"/>
+            <rect x="250" y="256" width="34" height="46" rx="15" fill="#085642"/>
+            <!-- body -->
+            <ellipse cx="200" cy="185" rx="152" ry="118" fill="url(#pgBody)"/>
+            <ellipse cx="200" cy="185" rx="152" ry="118" fill="url(#pgSheen)"/>
+            <!-- ear -->
+            <path d="M118 84 C 106 58, 132 44, 152 60 C 142 72, 134 82, 130 94 Z" fill="#0c6e50"/>
+            <!-- coin slot -->
+            <rect x="172" y="68" width="58" height="11" rx="5.5" fill="#053327"/>
+            <!-- snout -->
+            <ellipse cx="322" cy="185" rx="38" ry="32" fill="url(#pgSnout)"/>
+            <ellipse cx="314" cy="180" rx="6.5" ry="9" fill="#053327"/>
+            <ellipse cx="333" cy="180" rx="6.5" ry="9" fill="#053327"/>
+            <!-- eye -->
+            <circle cx="258" cy="140" r="9" fill="#04231a"/>
+            <circle cx="261" cy="137" r="3" fill="#9fe8cf"/>
+            <!-- blush -->
+            <ellipse cx="270" cy="196" rx="16" ry="9" fill="#3ec89a" opacity="0.35"/>
+            <!-- belly coin glints -->
+            <circle cx="150" cy="215" r="4" fill="#d9b36a" opacity="0.55"/>
+            <circle cx="172" cy="232" r="3" fill="#d9b36a" opacity="0.35"/>
+          </svg>
+        </div>
+      </div>
+      <!-- parallax layer: near -->
+      <div class="stage-layer" data-depth="38">
+        <div class="coin coin-a">₹</div>
+        <div class="coin coin-b">₹</div>
+        <div class="chip-float chip-income">
+          <span class="chip-ico">💼</span>
+          <span><small>Salary credited</small><b>+₹75,000</b></span>
+        </div>
+        <div class="chip-float chip-spend">
+          <span class="chip-ico">🍜</span>
+          <span><small>Dinner · Swiggy</small><b>−₹420</b></span>
+        </div>
+        <div class="chip-float chip-save">
+          <span class="chip-ico">📈</span>
+          <span><small>Savings rate</small><b class="num" id="chipSave">31%</b></span>
+        </div>
+        <div class="mini-dash tilt">
+          <div class="md-head"><span>JULY · OVERVIEW</span><span class="md-live"><span class="live-dot"></span>LIVE</span></div>
+          <div class="md-bal num" id="mdBal">₹52,840</div>
+          <div class="md-delta">▲ ₹6,120 vs last month</div>
+          <svg class="md-spark" id="mdSpark" viewBox="0 0 260 46" width="100%" height="46"></svg>
+          <div class="md-row">
+            <div class="md-cell"><small>Income</small><b class="num">₹75.0k</b></div>
+            <div class="md-cell"><small>Spent</small><b class="num">₹22.2k</b></div>
+            <div class="md-cell"><small>Saved</small><b class="num" style="color:var(--emerald)">31%</b></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ══ METRICS ══ -->
+<section id="metrics">
+  <div class="wrap">
+    <div class="kicker reveal">Smart metrics</div>
+    <h2 class="sec-title reveal d1">Your month, at a glance</h2>
+    <p class="sec-sub reveal d2">Numbers that update themselves and explain themselves — no spreadsheets, no math homework.</p>
+    <div class="metrics-grid">
+      <div class="card tilt metric reveal">
+        <div class="m-top">
+          <div class="m-ico" style="background:rgba(224,116,116,0.1)">💸</div>
+          <span class="m-trend down">−8.2%</span>
+        </div>
+        <div class="m-label">Monthly spend</div>
+        <div class="m-value num" data-count="22240" data-prefix="₹">₹0</div>
+        <div class="m-foot">of ₹40,000 budget · trending calm</div>
+        <svg class="mspark" width="120" height="42" viewBox="0 0 120 42">
+          <path d="M0 30 L20 26 L40 32 L60 20 L80 24 L100 14 L120 18" stroke="#e07474" stroke-width="2" fill="none" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="card tilt metric reveal d1">
+        <div class="m-top">
+          <div class="m-ico" style="background:rgba(47,191,143,0.1)">🌱</div>
+          <span class="m-trend up">+12.4%</span>
+        </div>
+        <div class="m-label">Saved this month</div>
+        <div class="m-value num" data-count="23400" data-prefix="₹">₹0</div>
+        <div class="m-foot">31% savings rate — personal best</div>
+        <svg class="mspark" width="120" height="42" viewBox="0 0 120 42">
+          <path d="M0 34 L20 30 L40 31 L60 24 L80 20 L100 12 L120 8" stroke="#2fbf8f" stroke-width="2" fill="none" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="card tilt metric reveal d2">
+        <div class="m-top">
+          <div class="m-ico" style="background:rgba(88,200,230,0.1)">🛡️</div>
+          <span class="m-trend up">healthy</span>
+        </div>
+        <div class="m-label">Budget remaining</div>
+        <div class="m-value num" data-count="17760" data-prefix="₹">₹0</div>
+        <div class="m-foot">₹638/day for the next 23 days</div>
+        <svg class="mspark" width="120" height="42" viewBox="0 0 120 42">
+          <path d="M0 10 L20 14 L40 13 L60 18 L80 22 L100 24 L120 28" stroke="#58c8e6" stroke-width="2" fill="none" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="card tilt metric reveal d3">
+        <div class="m-top">
+          <div class="m-ico" style="background:rgba(217,179,106,0.1)">🔥</div>
+          <span class="m-trend up">day 47</span>
+        </div>
+        <div class="m-label">Under-budget streak</div>
+        <div class="m-value num" data-count="47" data-suffix=" days">0</div>
+        <div class="m-foot">longest streak yet — keep it alive</div>
+        <svg class="mspark" width="120" height="42" viewBox="0 0 120 42">
+          <path d="M0 36 L20 32 L40 28 L60 26 L80 20 L100 16 L120 10" stroke="#d9b36a" stroke-width="2" fill="none" stroke-linecap="round"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ ANALYTICS ══ -->
+<section id="analytics">
+  <div class="wrap">
+    <div class="kicker reveal">Spending analytics</div>
+    <h2 class="sec-title reveal d1">See the shape of your money</h2>
+    <p class="sec-sub reveal d2">Cashflow that reads like a story — where it came from, where it went, and where it's heading.</p>
+    <div class="ana-grid">
+      <div class="card ana-main reveal">
+        <div class="ana-head">
+          <div>
+            <h3>Cashflow</h3>
+            <div class="sub">income vs spending, <span id="tabLabel">last 30 days</span></div>
+          </div>
+          <div class="tabs" id="rangeTabs">
+            <div class="tab-pill" id="tabPill"></div>
+            <button class="on" data-range="30">1M</button>
+            <button data-range="90">3M</button>
+            <button data-range="180">6M</button>
+          </div>
+        </div>
+        <svg id="areaChart" viewBox="0 0 720 300"></svg>
+      </div>
+      <div class="card rings reveal d2">
+        <h3>Where it goes</h3>
+        <div class="sub">top categories · July</div>
+        <div id="ringRows"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ PLANNER ══ -->
+<section id="planner">
+  <div class="wrap">
+    <div class="kicker reveal">Budget planner</div>
+    <h2 class="sec-title reveal d1">Limits that feel like guardrails,<br>not guilt</h2>
+    <div class="plan-grid">
+      <div class="card plan-card reveal">
+        <h3>Category limits</h3>
+        <div class="sub">soft caps with gentle nudges — bars fill as the month unfolds</div>
+        <div id="limitRows"></div>
+      </div>
+      <div class="plan-side">
+        <div class="card plan-card reveal d1">
+          <h3>Emergency vault</h3>
+          <div class="sub">auto-saves ₹500 every payday</div>
+          <div class="vault-visual">
+            <div class="jar-wrap">
+              <svg width="110" height="130" viewBox="0 0 110 130">
+                <defs>
+                  <clipPath id="jarClip"><path d="M22 30 h66 v74 a14 14 0 0 1 -14 14 h-38 a14 14 0 0 1 -14 -14 Z"/></clipPath>
+                  <linearGradient id="jarFillG" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0" stop-color="#e9cf92"/>
+                    <stop offset="1" stop-color="#b98f45"/>
+                  </linearGradient>
+                </defs>
+                <g clip-path="url(#jarClip)">
+                  <rect id="jarFill" x="22" y="130" width="66" height="100" fill="url(#jarFillG)" opacity="0.9"/>
+                  <ellipse id="jarWave" cx="55" cy="130" rx="44" ry="5" fill="#f4e0ac" opacity="0.8"/>
+                  <circle class="jar-coin" cx="45" cy="-10" r="7" fill="#f0d9a4" stroke="#8a6a2c"/>
+                  <circle class="jar-coin c2" cx="66" cy="-10" r="6" fill="#f0d9a4" stroke="#8a6a2c"/>
+                </g>
+                <path d="M22 30 h66 v74 a14 14 0 0 1 -14 14 h-38 a14 14 0 0 1 -14 -14 Z"
+                  stroke="rgba(255,255,255,0.35)" stroke-width="2.5" fill="rgba(255,255,255,0.03)"/>
+                <rect x="16" y="18" width="78" height="13" rx="6" fill="rgba(255,255,255,0.16)" stroke="rgba(255,255,255,0.3)"/>
+              </svg>
+            </div>
+            <div class="goal-info">
+              <small>VAULT BALANCE</small>
+              <b class="big num" data-count="34500" data-prefix="₹">₹0</b>
+              <small>68% of ₹50,000 target</small><br>
+              <span class="goal-eta">🎯 full by November</span>
+            </div>
+          </div>
+        </div>
+        <div class="card plan-card reveal d2">
+          <h3>Goa trip fund</h3>
+          <div class="sub">₹1,000/week autopilot</div>
+          <div class="limit-row" style="border:none;padding-top:6px">
+            <div class="limit-top"><b>₹18,000 of ₹25,000</b><span class="lt-r">72%</span></div>
+            <div class="limit-bar"><div class="limit-fill" data-fill="72" style="background:linear-gradient(90deg,#7a68e8,var(--violet))"></div></div>
+          </div>
+          <span class="goal-eta" style="color:var(--violet);background:rgba(157,140,255,0.1);border-color:rgba(157,140,255,0.3)">✈️ 7 weeks to takeoff</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ TIMELINE ══ -->
+<section id="activity">
+  <div class="wrap">
+    <div class="kicker reveal">Transaction timeline</div>
+    <h2 class="sec-title reveal d1">Logged in seconds, remembered forever</h2>
+    <p class="sec-sub reveal d2">Text it like you'd tell a friend — "swiggy 420 dinner" — and Aurum files it perfectly.</p>
+    <div class="tx-list" id="txList"></div>
+  </div>
+</section>
+
+<!-- ══ INSIGHTS ══ -->
+<section id="insights">
+  <div class="wrap">
+    <div class="kicker reveal">Insights &amp; habits</div>
+    <h2 class="sec-title reveal d1">Patterns you'd never<br>catch yourself</h2>
+    <div class="ins-grid">
+      <div class="card ins reveal" style="--ins-c: var(--gold)">
+        <div class="i-head">
+          <div class="i-ico" style="background:rgba(217,179,106,0.1)">⚠️</div>
+          <span class="i-tag">Overspend watch</span>
+        </div>
+        <h4>Weekend food is 2.3× weekday food</h4>
+        <p>Saturdays average <b>₹1,140</b> on eating out vs <b>₹495</b> weekdays. Capping weekends at ₹800 saves <b>₹16,300/year</b>.</p>
+      </div>
+      <div class="card ins reveal d1" style="--ins-c: var(--violet)">
+        <div class="i-head">
+          <div class="i-ico" style="background:rgba(157,140,255,0.1)">🔁</div>
+          <span class="i-tag">Subscription radar</span>
+        </div>
+        <h4>3 subscriptions renew this week</h4>
+        <p>Netflix ₹649, Spotify ₹119, iCloud ₹75 — <b>₹843</b> total. You haven't opened one of them in 26 days.</p>
+      </div>
+      <div class="card ins reveal d2" style="--ins-c: var(--emerald)">
+        <div class="i-head">
+          <div class="i-ico" style="background:rgba(47,191,143,0.1)">🔥</div>
+          <span class="i-tag">Streak</span>
+        </div>
+        <h4>47 days under budget</h4>
+        <p>Your longest run yet. At this pace July closes <b>₹4,700 under</b> — that's a whole month of groceries banked.</p>
+      </div>
+      <div class="card ins reveal d3" style="--ins-c: var(--cyan)">
+        <div class="i-head">
+          <div class="i-ico" style="background:rgba(88,200,230,0.1)">💡</div>
+          <span class="i-tag">Savings nudge</span>
+        </div>
+        <h4>Round-ups could add ₹9,200/year</h4>
+        <p>Rounding every spend to the nearest ₹50 into your vault would have saved <b>₹770</b> last month alone.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FINAL CTA ══ -->
+<section class="final" id="cta">
+  <div class="wrap">
+    <div class="final-card reveal">
+      <h2>Your money deserves<br>a <span class="grad-text">beautiful home</span></h2>
+      <p>Free forever. Private by design. Set up in ninety seconds — your future self says thanks.</p>
+      <a class="btn btn-primary magnetic" href="#top" style="font-size:16px;padding:15px 34px">Start tracking free <span class="arr">→</span></a>
+      <div class="final-stats">
+        <div class="fs"><b class="num" data-count="12408">0</b><small>active savers</small></div>
+        <div class="fs"><b class="num" data-count="4.2" data-decimals="1" data-prefix="₹" data-suffix="Cr">₹0</b><small>tracked safely</small></div>
+        <div class="fs"><b class="num" data-count="31" data-suffix="%">0</b><small>avg. savings rate</small></div>
+      </div>
+    </div>
+    <footer>
+      <div class="foot-inner">
+        <a class="logo" href="#top"><span class="logo-coin"></span>aurum</a>
+        <span>Local-first · your data never leaves your device</span>
+        <span>© 2026 Aurum. Crafted with restraint.</span>
+      </div>
+    </footer>
+  </div>
+</section>
+
+<div id="ctip"></div>
+
+<script>
+"use strict";
+const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/* ── nav: shrink on scroll, hide on scroll-down ─────────────────────── */
+const nav = document.getElementById("nav");
+let lastY = 0;
+addEventListener("scroll", () => {
+  const y = scrollY;
+  nav.classList.toggle("scrolled", y > 24);
+  nav.classList.toggle("hidden", y > 480 && y > lastY);
+  lastY = y;
+}, { passive: true });
+
+/* ── scroll reveal ──────────────────────────────────────────────────── */
+const io = new IntersectionObserver(es => es.forEach(e => {
+  if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); }
+}), { threshold: 0.12, rootMargin: "0px 0px -40px 0px" });
+document.querySelectorAll(".reveal").forEach(el => io.observe(el));
+
+/* ── nav active section ─────────────────────────────────────────────── */
+const navAs = [...document.querySelectorAll("#navLinks a")];
+const secIO = new IntersectionObserver(es => es.forEach(e => {
+  if (e.isIntersecting) {
+    navAs.forEach(a => a.classList.toggle("active", a.getAttribute("href") === "#" + e.target.id));
+  }
+}), { rootMargin: "-40% 0px -55% 0px" });
+["metrics", "analytics", "planner", "activity", "insights"].forEach(id =>
+  secIO.observe(document.getElementById(id)));
+
+/* ── count-up numbers ───────────────────────────────────────────────── */
+const fmtIN = n => {
+  let s = String(Math.round(n));
+  if (s.length > 3) {
+    let head = s.slice(0, -3), tail = s.slice(-3), parts = [];
+    while (head.length > 2) { parts.unshift(head.slice(-2)); head = head.slice(0, -2); }
+    if (head) parts.unshift(head);
+    s = parts.join(",") + "," + tail;
+  }
+  return s;
+};
+const countIO = new IntersectionObserver(es => es.forEach(e => {
+  if (!e.isIntersecting) return;
+  countIO.unobserve(e.target);
+  const el = e.target, target = +el.dataset.count;
+  const pre = el.dataset.prefix || "", suf = el.dataset.suffix || "";
+  const dec = +el.dataset.decimals || 0;
+  const show = v => pre + (dec ? v.toFixed(dec) : fmtIN(v)) + suf;
+  if (reduceMotion) { el.textContent = show(target); return; }
+  const t0 = performance.now(), dur = 1500;
+  (function tick(t) {
+    const p = Math.min((t - t0) / dur, 1);
+    const eased = 1 - Math.pow(1 - p, 4);
+    el.textContent = show(target * eased);
+    if (p < 1) requestAnimationFrame(tick);
+  })(t0);
+}), { threshold: 0.6 });
+document.querySelectorAll("[data-count]").forEach(el => countIO.observe(el));
+
+/* ── magnetic buttons ───────────────────────────────────────────────── */
+if (!reduceMotion) document.querySelectorAll(".magnetic").forEach(btn => {
+  btn.addEventListener("mousemove", e => {
+    const r = btn.getBoundingClientRect();
+    const dx = (e.clientX - r.left - r.width / 2) / r.width;
+    const dy = (e.clientY - r.top - r.height / 2) / r.height;
+    btn.style.transform = `translate(${dx * 8}px, ${dy * 8 - 2}px)`;
+  });
+  btn.addEventListener("mouseleave", () => { btn.style.transform = ""; });
+});
+
+/* ── card tilt + sheen tracking ─────────────────────────────────────── */
+document.querySelectorAll(".card").forEach(card => {
+  card.addEventListener("mousemove", e => {
+    const r = card.getBoundingClientRect();
+    card.style.setProperty("--mx", ((e.clientX - r.left) / r.width * 100) + "%");
+    card.style.setProperty("--my", ((e.clientY - r.top) / r.height * 100) + "%");
+    if (!reduceMotion && card.classList.contains("tilt")) {
+      const rx = ((e.clientY - r.top) / r.height - 0.5) * -5;
+      const ry = ((e.clientX - r.left) / r.width - 0.5) * 5;
+      card.style.transform = `perspective(900px) rotateX(${rx}deg) rotateY(${ry}deg) translateY(-4px)`;
+    }
+  });
+  card.addEventListener("mouseleave", () => { card.style.transform = ""; });
+});
+
+/* ── hero parallax (mouse + scroll) ─────────────────────────────────── */
+const stage = document.getElementById("stage");
+const layers = [...document.querySelectorAll(".stage-layer")];
+if (stage && !reduceMotion) {
+  let tx = 0, ty = 0, cx = 0, cy = 0;
+  addEventListener("mousemove", e => {
+    tx = (e.clientX / innerWidth - 0.5);
+    ty = (e.clientY / innerHeight - 0.5);
+  }, { passive: true });
+  (function ease() {
+    cx += (tx - cx) * 0.045; cy += (ty - cy) * 0.045;
+    layers.forEach(l => {
+      const d = +l.dataset.depth;
+      l.style.transform = `translate3d(${-cx * d}px, ${-cy * d}px, 0)`;
+    });
+    requestAnimationFrame(ease);
+  })();
+  // blobs drift with scroll
+  const blobs = [...document.querySelectorAll(".blob")];
+  addEventListener("scroll", () => {
+    blobs.forEach(b => b.style.transform = `translateY(${scrollY * +b.dataset.para}px)`);
+  }, { passive: true });
+}
+
+/* ── piggy: coin drop loop ──────────────────────────────────────────── */
+(function coinDrop() {
+  const c = document.querySelector(".drop-coin");
+  if (!c || reduceMotion) return;
+  c.animate([
+    { transform: "translateY(-26px) scale(0.6)", opacity: 0 },
+    { transform: "translateY(0) scale(1)", opacity: 1, offset: 0.35 },
+    { transform: "translateY(26px) scaleY(0.5) scaleX(0.8)", opacity: 0.9, offset: 0.8 },
+    { transform: "translateY(40px) scaleY(0.2)", opacity: 0 },
+  ], { duration: 2200, easing: "cubic-bezier(0.5, 0, 0.6, 1)" });
+  setTimeout(coinDrop, 4200);
+})();
+
+/* ── mini-dash sparkline + live ticking balance ─────────────────────── */
+(function () {
+  const pts = [8, 14, 11, 18, 15, 22, 19, 27, 24, 31, 29, 38];
+  const W = 260, H = 46, max = Math.max(...pts);
+  const path = pts.map((v, i) =>
+    (i ? "L" : "M") + (i / (pts.length - 1) * W).toFixed(1) + " " + (H - 6 - v / max * (H - 12)).toFixed(1)
+  ).join(" ");
+  document.getElementById("mdSpark").innerHTML =
+    `<defs><linearGradient id="sgrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2fbf8f" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#2fbf8f" stop-opacity="0"/></linearGradient></defs>
+     <path d="${path} L ${W} ${H} L 0 ${H} Z" fill="url(#sgrad)"/>
+     <path d="${path}" stroke="#2fbf8f" stroke-width="2" fill="none" stroke-linecap="round"/>`;
+  // live tick
+  let bal = 52840;
+  const el = document.getElementById("mdBal");
+  if (!reduceMotion) setInterval(() => {
+    bal += Math.round(Math.sin(Date.now() / 3000) * 40) + 25;
+    el.textContent = "₹" + fmtIN(bal);
+  }, 2600);
+})();
+
+/* ── analytics area chart ───────────────────────────────────────────── */
+const ctip = document.getElementById("ctip");
+function tipShow(e, html) {
+  ctip.innerHTML = html; ctip.style.display = "block";
+  let x = e.clientX + 14, y = e.clientY + 14;
+  if (x + ctip.offsetWidth > innerWidth - 10) x = e.clientX - ctip.offsetWidth - 14;
+  if (y + ctip.offsetHeight > innerHeight - 10) y = e.clientY - ctip.offsetHeight - 14;
+  ctip.style.left = x + "px"; ctip.style.top = y + "px";
+}
+const tipHide = () => ctip.style.display = "none";
+
+function genSeries(days, seedA, amp) {
+  // deterministic pleasant wave
+  const out = [];
+  for (let i = 0; i < days; i++) {
+    const v = amp * (0.55 + 0.28 * Math.sin(i / 4.1 + seedA) + 0.17 * Math.sin(i / 1.7 + seedA * 2)
+      + 0.12 * Math.sin(i / 9 + seedA * 3));
+    out.push(Math.max(v, amp * 0.08));
+  }
+  return out;
+}
+function smoothPath(pts, X, Y) {
+  let d = `M ${X(0)} ${Y(pts[0])}`;
+  for (let i = 1; i < pts.length; i++) {
+    const x0 = X(i - 1), x1 = X(i), mx = (x0 + x1) / 2;
+    d += ` C ${mx} ${Y(pts[i - 1])}, ${mx} ${Y(pts[i])}, ${X(i)} ${Y(pts[i])}`;
+  }
+  return d;
+}
+const chartSvg = document.getElementById("areaChart");
+function drawChart(days) {
+  const spend = genSeries(days, 1.3, 1400);
+  const income = genSeries(days, 4.1, 2400);
+  const W = 720, H = 300, L = 54, R = 16, T = 18, B = 34;
+  const pw = W - L - R, ph = H - T - B;
+  const yMax = Math.max(...income, ...spend) * 1.15;
+  const X = i => L + i / (days - 1) * pw;
+  const Y = v => T + ph - v / yMax * ph;
+  let grid = "";
+  for (let g = 0; g <= 4; g++) {
+    const v = yMax / 4 * g, y = Y(v);
+    grid += `<line x1="${L}" y1="${y}" x2="${W - R}" y2="${y}" stroke="rgba(255,255,255,0.05)"/>
+      <text x="${L - 10}" y="${y + 4}" text-anchor="end" fill="#64707a" font-size="11" font-family="inherit">₹${(v / 1000).toFixed(1)}k</text>`;
+  }
+  const step = days > 60 ? 30 : 7;
+  let xt = "";
+  for (let i = 0; i < days; i += step)
+    xt += `<text x="${X(i)}" y="${H - 12}" text-anchor="middle" fill="#64707a" font-size="11">${days - i}d ago</text>`;
+
+  const pS = smoothPath(spend, X, Y), pI = smoothPath(income, X, Y);
+  chartSvg.innerHTML = `
+    <defs>
+      <linearGradient id="gI" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#2fbf8f" stop-opacity="0.28"/><stop offset="1" stop-color="#2fbf8f" stop-opacity="0"/>
+      </linearGradient>
+      <linearGradient id="gS" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#58c8e6" stop-opacity="0.16"/><stop offset="1" stop-color="#58c8e6" stop-opacity="0"/>
+      </linearGradient>
+    </defs>
+    ${grid}${xt}
+    <path d="${pI} L ${X(days - 1)} ${Y(0)} L ${X(0)} ${Y(0)} Z" fill="url(#gI)" class="fillA"/>
+    <path d="${pS} L ${X(days - 1)} ${Y(0)} L ${X(0)} ${Y(0)} Z" fill="url(#gS)" class="fillA"/>
+    <path d="${pI}" stroke="#2fbf8f" stroke-width="2.4" fill="none" stroke-linecap="round" class="lineA"/>
+    <path d="${pS}" stroke="#58c8e6" stroke-width="2.4" fill="none" stroke-linecap="round" class="lineA"/>
+    <g id="chGuide" style="display:none">
+      <line y1="${T}" y2="${T + ph}" stroke="rgba(255,255,255,0.18)" stroke-dasharray="3 4"/>
+      <circle r="4.5" fill="#2fbf8f" stroke="#0b0f14" stroke-width="2"/>
+      <circle r="4.5" fill="#58c8e6" stroke="#0b0f14" stroke-width="2"/>
+    </g>
+    <rect x="${L}" y="${T}" width="${pw}" height="${ph}" fill="transparent" id="chHit"/>
+    <g font-size="12" font-family="inherit">
+      <circle cx="${L + 8}" cy="${T - 2}" r="4" fill="#2fbf8f"/><text x="${L + 18}" y="${T + 2}" fill="#a8b4bc">income</text>
+      <circle cx="${L + 88}" cy="${T - 2}" r="4" fill="#58c8e6"/><text x="${L + 98}" y="${T + 2}" fill="#a8b4bc">spending</text>
+    </g>`;
+  // animate draw-in
+  if (!reduceMotion) {
+    chartSvg.querySelectorAll(".lineA").forEach(p => {
+      const len = p.getTotalLength();
+      p.style.strokeDasharray = len; p.style.strokeDashoffset = len;
+      p.animate([{ strokeDashoffset: len }, { strokeDashoffset: 0 }],
+        { duration: 1400, easing: "cubic-bezier(0.22,1,0.36,1)", fill: "forwards" });
+    });
+    chartSvg.querySelectorAll(".fillA").forEach(p =>
+      p.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 1100, delay: 500, fill: "backwards" }));
+  }
+  // hover crosshair
+  const hit = chartSvg.querySelector("#chHit");
+  const guide = chartSvg.querySelector("#chGuide");
+  const [gl, c1, c2] = guide.children;
+  hit.addEventListener("mousemove", e => {
+    const pt = chartSvg.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY;
+    const p = pt.matrixTransform(chartSvg.getScreenCTM().inverse());
+    let i = Math.round((p.x - L) / pw * (days - 1));
+    i = Math.max(0, Math.min(i, days - 1));
+    guide.style.display = "block";
+    gl.setAttribute("x1", X(i)); gl.setAttribute("x2", X(i));
+    c1.setAttribute("cx", X(i)); c1.setAttribute("cy", Y(income[i]));
+    c2.setAttribute("cx", X(i)); c2.setAttribute("cy", Y(spend[i]));
+    tipShow(e, `<div class="th">${days - 1 - i} days ago</div>
+      <span style="color:#2fbf8f">●</span> income <b class="num">₹${fmtIN(income[i])}</b><br>
+      <span style="color:#58c8e6">●</span> spend <b class="num">₹${fmtIN(spend[i])}</b>`);
+  });
+  hit.addEventListener("mouseleave", () => { guide.style.display = "none"; tipHide(); });
+}
+
+/* range tabs */
+const tabsBox = document.getElementById("rangeTabs");
+const pill = document.getElementById("tabPill");
+function placePill(btn) {
+  pill.style.left = btn.offsetLeft + "px";
+  pill.style.width = btn.offsetWidth + "px";
+}
+tabsBox.querySelectorAll("button").forEach(btn => btn.addEventListener("click", () => {
+  tabsBox.querySelectorAll("button").forEach(b => b.classList.remove("on"));
+  btn.classList.add("on"); placePill(btn);
+  document.getElementById("tabLabel").textContent =
+    "last " + { 30: "30 days", 90: "3 months", 180: "6 months" }[btn.dataset.range];
+  drawChart(+btn.dataset.range);
+}));
+
+/* draw chart when visible */
+const chartIO = new IntersectionObserver(es => es.forEach(e => {
+  if (e.isIntersecting) { drawChart(30); placePill(tabsBox.querySelector("button.on")); chartIO.disconnect(); }
+}), { threshold: 0.3 });
+chartIO.observe(chartSvg);
+
+/* ── category rings ─────────────────────────────────────────────────── */
+const RING_DATA = [
+  { name: "Food & dining", note: "18 orders", amt: 8420, pct: 38, c: "#e07474" },
+  { name: "Rent & home", note: "on the 1st", amt: 6000, pct: 27, c: "#9d8cff" },
+  { name: "Travel", note: "42 rides", amt: 3180, pct: 14, c: "#58c8e6" },
+  { name: "Groceries", note: "12 baskets", amt: 2610, pct: 12, c: "#2fbf8f" },
+  { name: "Luxuries", note: "you earned it", amt: 2030, pct: 9, c: "#d9b36a" },
+];
+document.getElementById("ringRows").innerHTML = RING_DATA.map((r, i) => {
+  const R = 21, C = 2 * Math.PI * R;
+  return `<div class="ring-row">
+    <svg class="ring-svg" width="54" height="54" viewBox="0 0 54 54">
+      <circle class="track" cx="27" cy="27" r="${R}" fill="none" stroke-width="5"/>
+      <circle class="val" cx="27" cy="27" r="${R}" fill="none" stroke="${r.c}" stroke-width="5"
+        stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${C}"
+        data-off="${C * (1 - r.pct / 100)}" transform="rotate(-90 27 27)"/>
+      <text x="27" y="31" text-anchor="middle" font-size="11.5" font-weight="700" fill="#eef3f1" font-family="inherit">${r.pct}%</text>
+    </svg>
+    <div class="ring-info"><b>${r.name}</b><small>${r.note}</small></div>
+    <div class="ring-amt num">₹${fmtIN(r.amt)}<small>this month</small></div>
+  </div>`;
+}).join("");
+const ringIO = new IntersectionObserver(es => es.forEach(e => {
+  if (!e.isIntersecting) return;
+  ringIO.disconnect();
+  document.querySelectorAll(".ring-svg .val").forEach((c, i) =>
+    setTimeout(() => c.style.strokeDashoffset = c.dataset.off, 120 * i));
+}), { threshold: 0.4 });
+ringIO.observe(document.getElementById("ringRows"));
+
+/* ── budget limit bars ──────────────────────────────────────────────── */
+const LIMITS = [
+  { name: "Food & dining", spent: 8420, cap: 9000, c: "linear-gradient(90deg,#c85f5f,#e07474)" },
+  { name: "Travel", spent: 3180, cap: 5000, c: "linear-gradient(90deg,#3fa3c4,#58c8e6)" },
+  { name: "Groceries", spent: 2610, cap: 6000, c: "linear-gradient(90deg,#1e9a74,#2fbf8f)" },
+  { name: "Luxuries", spent: 2030, cap: 3000, c: "linear-gradient(90deg,#b8944e,#d9b36a)" },
+  { name: "Shopping", spent: 1240, cap: 4000, c: "linear-gradient(90deg,#7a68e8,#9d8cff)" },
+];
+document.getElementById("limitRows").innerHTML = LIMITS.map(l => `
+  <div class="limit-row">
+    <div class="limit-top"><b>${l.name}</b>
+      <span class="lt-r num">₹${fmtIN(l.spent)} <span style="color:var(--muted)">/ ₹${fmtIN(l.cap)}</span></span></div>
+    <div class="limit-bar"><div class="limit-fill" data-fill="${Math.min(l.spent / l.cap * 100, 100)}" style="background:${l.c}"></div></div>
+  </div>`).join("");
+const fillIO = new IntersectionObserver(es => es.forEach(e => {
+  if (!e.isIntersecting) return;
+  fillIO.unobserve(e.target);
+  e.target.querySelectorAll(".limit-fill").forEach((f, i) =>
+    setTimeout(() => f.style.width = f.dataset.fill + "%", 140 * i));
+}), { threshold: 0.3 });
+document.querySelectorAll(".plan-card, .plan-side .card").forEach(el => fillIO.observe(el));
+
+/* ── vault: fill + coin drops ───────────────────────────────────────── */
+const vaultIO = new IntersectionObserver(es => es.forEach(e => {
+  if (!e.isIntersecting) return;
+  vaultIO.disconnect();
+  const fill = document.getElementById("jarFill");
+  const wave = document.getElementById("jarWave");
+  const targetY = 130 - 0.68 * 88; // 68% of usable jar height
+  if (reduceMotion) { fill.setAttribute("y", targetY); wave.setAttribute("cy", targetY); return; }
+  fill.animate([{ transform: "translateY(0)" }, { transform: `translateY(${targetY - 130}px)` }],
+    { duration: 1800, easing: "cubic-bezier(0.22,1,0.36,1)", fill: "forwards" });
+  wave.animate([{ transform: "translateY(0)" }, { transform: `translateY(${targetY - 130}px)` }],
+    { duration: 1800, easing: "cubic-bezier(0.22,1,0.36,1)", fill: "forwards" });
+  // gentle wave bob forever
+  setTimeout(() => wave.animate([
+    { transform: `translateY(${targetY - 130}px) scaleX(1)` },
+    { transform: `translateY(${targetY - 132}px) scaleX(1.04)` },
+    { transform: `translateY(${targetY - 130}px) scaleX(1)` },
+  ], { duration: 3200, iterations: Infinity, easing: "ease-in-out" }), 1800);
+  // coin drops
+  (function dropLoop() {
+    document.querySelectorAll(".jar-coin").forEach((coin, i) => {
+      coin.animate([
+        { transform: "translateY(0)", opacity: 0 },
+        { transform: "translateY(30px)", opacity: 1, offset: 0.3 },
+        { transform: `translateY(${targetY - 20}px)`, opacity: 1, offset: 0.85 },
+        { transform: `translateY(${targetY - 14}px)`, opacity: 0 },
+      ], { duration: 1600, delay: i * 700, easing: "cubic-bezier(0.4, 0, 0.7, 1)" });
+    });
+    setTimeout(dropLoop, 5200);
+  })();
+}), { threshold: 0.4 });
+vaultIO.observe(document.querySelector(".jar-wrap"));
+
+/* ── transactions ───────────────────────────────────────────────────── */
+const TXNS = [
+  { ico: "🍜", bg: "rgba(224,116,116,0.1)", name: "Swiggy · dinner", meta: "Today, 9:12 PM · logged from Telegram", amt: "−₹420", tags: ["food", "weekend", "auto-categorised"] },
+  { ico: "🚕", bg: "rgba(88,200,230,0.1)", name: "Ola · office commute", meta: "Today, 9:04 AM", amt: "−₹240", tags: ["travel", "recurring route"] },
+  { ico: "💼", bg: "rgba(47,191,143,0.1)", name: "Salary · Acme Corp", meta: "1 July, 10:00 AM", amt: "+₹75,000", in: true, tags: ["income", "monthly"] },
+  { ico: "🛒", bg: "rgba(47,191,143,0.1)", name: "Blinkit · groceries", meta: "Yesterday, 6:40 PM", amt: "−₹610", tags: ["groceries", "12 items"] },
+  { ico: "👕", bg: "rgba(213,81,129,0.1)", name: "Myntra · linen shirt", meta: "Tuesday, 2:18 PM", amt: "−₹1,500", tags: ["clothes", "sale season"] },
+  { ico: "📈", bg: "rgba(0,131,0,0.12)", name: "SIP · index fund", meta: "5 July, 8:00 AM · autopilot", amt: "−₹8,000", tags: ["investment", "automated"] },
+];
+document.getElementById("txList").innerHTML = TXNS.map((t, i) => `
+  <div class="card tx reveal ${["", "d1", "d2", "d3", "d4", "d4"][i] || ""}">
+    <div class="tx-ico" style="background:${t.bg}">${t.ico}</div>
+    <div><div class="tx-name">${t.name}</div><div class="tx-meta">${t.meta}</div></div>
+    <div class="tx-amt num ${t.in ? "in" : ""}">${t.amt}<small>${t.in ? "credited" : "debited"}</small></div>
+    <div class="tx-extra">${t.tags.map(g => `<span class="tx-tag">${g}</span>`).join("")}</div>
+  </div>`).join("");
+document.querySelectorAll("#txList .reveal").forEach(el => io.observe(el));
+// re-bind sheen tracking for injected cards
+document.querySelectorAll("#txList .card").forEach(card => {
+  card.addEventListener("mousemove", e => {
+    const r = card.getBoundingClientRect();
+    card.style.setProperty("--mx", ((e.clientX - r.left) / r.width * 100) + "%");
+    card.style.setProperty("--my", ((e.clientY - r.top) / r.height * 100) + "%");
+  });
+});
+
+/* ── savings-rate chip slow tick ────────────────────────────────────── */
+if (!reduceMotion) {
+  const chip = document.getElementById("chipSave");
+  let v = 31;
+  setInterval(() => { v = 31 + Math.round(Math.sin(Date.now() / 5000)); chip.textContent = v + "%"; }, 4000);
+}
+</script>
+</body>
+</html>

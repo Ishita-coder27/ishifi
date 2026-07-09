@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  aurum-api:
+    build: .
+    container_name: aurum-api
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=sqlite:///./aurum.db
+      - DEBUG=false
+      - ACCESS_TTL_MIN=15
+      - REFRESH_TTL_DAYS=30
+    volumes:
+      - ./api:/app/api
+      - ./data:/app/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import requests; requests.get('http://localhost:8000/api/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+
+  # Optional: Nginx reverse proxy for production
+  aurum-nginx:
+    image: nginx:alpine
+    container_name: aurum-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./certs:/etc/nginx/certs:ro
+    depends_on:
+      - aurum-api
+    restart: unless-stopped
+    profiles:
+      - production
+
+volumes:
+  data:
